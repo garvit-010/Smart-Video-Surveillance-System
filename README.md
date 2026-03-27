@@ -219,6 +219,35 @@ The output video (`outputs/processed_video.mp4`) contains:
 
 ---
 
+## Visual Examples
+
+### Before & After Processing
+
+Below is an example of a single frame before and after the pipeline processes it:
+
+#### Input Frame
+Raw, unprocessed frame from the source video:
+
+![Input Image](data/input.png)
+
+#### Output Frame (After Processing)
+The same frame after passing through all 5 stages of the pipeline with annotations:
+
+![Output Image](outputs/output.png)
+
+### What the Pipeline Adds
+
+1. **Green Bounding Boxes** — Detected moving objects identified by the contour-based detection stage
+2. **Red Centroid Dots** — Center points of each detected object, used for tracking
+3. **Persistent ID Labels** — Unique integer identifiers that remain consistent across frames for the same object
+4. **Green Edge Overlay** — Subtle visualization of Canny edge detection results (20–25% opacity)
+5. **HUD Information** — Real-time display of:
+   - Current frame number
+   - Number of detections in this frame
+   - Number of actively tracked objects
+
+---
+
 ## Configuration
 
 All parameters are in `config.py` — change them without touching any other file:
