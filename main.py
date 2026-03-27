@@ -1,12 +1,4 @@
-"""
-main.py
--------
-Entry point for the Smart Video Surveillance pipeline.
-
-Usage:
-    python main.py --input data/sample_video.mp4
-    python main.py --input data/sample_video.mp4 --output outputs/result.mp4
-"""
+"""Entry point for the Smart Video Surveillance pipeline."""
 
 import argparse
 import os
@@ -17,11 +9,7 @@ from src.utils.utils       import log
 
 
 def parse_args() -> argparse.Namespace:
-    """Parse and validate CLI arguments.
-
-    Returns:
-        Namespace with .input and .output attributes.
-    """
+    """Parse command-line arguments for input and output paths."""
     parser = argparse.ArgumentParser(
         prog="main.py",
         description="Smart Video Surveillance — Multi-Stage Computer Vision Pipeline",
@@ -52,7 +40,7 @@ def parse_args() -> argparse.Namespace:
 
 
 def main() -> None:
-    """CLI entry point."""
+    """Run the video processing pipeline."""
     args = parse_args()
 
     log.info("=" * 52)

@@ -1,12 +1,4 @@
-"""
-feature_extraction.py
----------------------
-Stage 2 of the pipeline.
-
-Extracts low-level visual features from the preprocessed (grayscale) frame:
-  1. Canny edge detection  → edge map overlaid on the final output
-  2. HOG feature vector    → diagnostic / future ML use
-"""
+"""Extract visual features: Canny edges and HOG descriptors."""
 
 import cv2
 import numpy as np
@@ -21,28 +13,13 @@ from ..config import (
 
 
 def extract_edges(gray: np.ndarray) -> np.ndarray:
-    """Apply Canny edge detection to produce a binary edge map.
-
-    Args:
-        gray: Preprocessed single-channel (grayscale) frame.
-
-    Returns:
-        Binary edge map (same H×W as input, dtype uint8).
-    """
+    """Apply Canny edge detection."""
     edges = cv2.Canny(gray, CANNY_THRESHOLD_LOW, CANNY_THRESHOLD_HIGH)
     return edges
 
 
 def extract_hog_features(gray: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
-    """Compute HOG (Histogram of Oriented Gradients) features.
-
-    Args:
-        gray: Preprocessed single-channel (grayscale) frame.
-
-    Returns:
-        Tuple of (feature_vector, hog_visualisation_image).
-        The visualisation image can be overlaid on frames for inspection.
-    """
+    """Compute HOG (Histogram of Oriented Gradients) features."""
     feature_vector, hog_image = hog(
         gray,
         orientations=HOG_ORIENTATIONS,
@@ -57,17 +34,7 @@ def extract_hog_features(gray: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
 
 
 def extract_features(gray: np.ndarray) -> dict:
-    """Run the complete feature extraction stage.
-
-    Args:
-        gray: Preprocessed single-channel frame.
-
-    Returns:
-        Dictionary with keys:
-          - 'edges'             : binary edge map (np.ndarray)
-          - 'hog_features'     : 1-D HOG feature vector (np.ndarray)
-          - 'hog_visualization': grayscale HOG visualisation (np.ndarray)
-    """
+    """Extract edge and HOG features from a preprocessed frame."""
     edges                         = extract_edges(gray)
     hog_features, hog_vis         = extract_hog_features(gray)
 

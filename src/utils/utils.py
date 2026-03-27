@@ -1,14 +1,4 @@
-"""
-utils.py
---------
-Shared utility helpers used across the pipeline.
-
-Responsibilities:
-  - Logging / progress output
-  - Output video writer setup
-  - Overlay text rendering
-  - Timing utilities
-"""
+"""Utility functions for logging, video I/O, and frame annotations."""
 
 import cv2
 import os
@@ -26,7 +16,7 @@ from ..config import (
 # ── Logging ───────────────────────────────────────────────────────────────────
 
 class Logger:
-    """Lightweight console logger with timestamps."""
+    """Simple console logger."""
 
     @staticmethod
     def info(msg: str) -> None:
@@ -41,24 +31,12 @@ class Logger:
         print(f"[ERROR] {msg}")
 
 
+
+
 log = Logger()
 
-
-# ── Video I/O ─────────────────────────────────────────────────────────────────
-
 def open_video(path: str) -> cv2.VideoCapture:
-    """Open a video file and validate it.
-
-    Args:
-        path: Path to the input video file.
-
-    Returns:
-        Opened cv2.VideoCapture object.
-
-    Raises:
-        FileNotFoundError: If the file does not exist.
-        RuntimeError:      If OpenCV cannot open the file.
-    """
+    """Open a video file for reading."""
     if not os.path.exists(path):
         raise FileNotFoundError(f"Video not found: '{path}'")
 
@@ -70,14 +48,7 @@ def open_video(path: str) -> cv2.VideoCapture:
 
 
 def get_video_properties(cap: cv2.VideoCapture) -> dict:
-    """Extract metadata from an open VideoCapture.
-
-    Args:
-        cap: Open VideoCapture.
-
-    Returns:
-        Dict with keys: width, height, fps, total_frames.
-    """
+    """Extract video metadata from an open VideoCapture."""
     return {
         "width"        : int(cap.get(cv2.CAP_PROP_FRAME_WIDTH)),
         "height"       : int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT)),
@@ -87,15 +58,7 @@ def get_video_properties(cap: cv2.VideoCapture) -> dict:
 
 
 def create_video_writer(output_path: str, props: dict) -> cv2.VideoWriter:
-    """Create a cv2.VideoWriter for the processed output.
-
-    Args:
-        output_path: Destination file path (.mp4).
-        props:       Video properties dict (from get_video_properties).
-
-    Returns:
-        Configured cv2.VideoWriter.
-    """
+    """Create a video writer for the output file."""
     os.makedirs(os.path.dirname(output_path) or OUTPUT_DIR, exist_ok=True)
     fourcc = cv2.VideoWriter_fourcc(*FOURCC)
     return cv2.VideoWriter(
@@ -103,23 +66,14 @@ def create_video_writer(output_path: str, props: dict) -> cv2.VideoWriter:
     )
 
 
-# ── Overlay helpers ───────────────────────────────────────────────────────────
+# ── Overlay helpers ────────────────────────────────────────────────────────────────
 
 def put_overlay_text(
     frame: np.ndarray,
     text: str,
     position: tuple[int, int],
 ) -> np.ndarray:
-    """Render a single line of overlay text onto a frame.
-
-    Args:
-        frame:    BGR frame to annotate.
-        text:     String to render.
-        position: (x, y) top-left anchor of the text.
-
-    Returns:
-        Annotated frame (in-place modification).
-    """
+    """Render text overlay on a frame."""
     cv2.putText(
         frame,
         text,
@@ -134,20 +88,10 @@ def put_overlay_text(
 
 
 def draw_tracking_ids(frame: np.ndarray, tracked_objects: dict) -> np.ndarray:
-    """Render each tracked object's ID above its centroid.
-
-    Args:
-        frame:           BGR frame to annotate.
-        tracked_objects: {id: centroid_array} from CentroidTracker.update().
-
-    Returns:
-        Annotated frame.
-    """
+    """Draw tracking IDs and centroids on a frame."""
     for obj_id, centroid in tracked_objects.items():
         cx, cy = int(centroid[0]), int(centroid[1])
-        # Draw centroid dot
         cv2.circle(frame, (cx, cy), 4, (0, 0, 255), -1)
-        # Draw ID label
         cv2.putText(
             frame,
             f"ID {obj_id}",
@@ -170,11 +114,11 @@ class Timer:
         self._start = time.perf_counter()
 
     def elapsed(self) -> float:
-        """Return seconds elapsed since the timer was created."""
+        """Return elapsed seconds."""
         return time.perf_counter() - self._start
 
     def elapsed_str(self) -> str:
-        """Return a formatted elapsed-time string."""
+        """Return formatted elapsed-time string."""
         secs = self.elapsed()
         return f"{secs:.2f}s"
 
@@ -187,14 +131,7 @@ def print_summary(
     elapsed: float,
     output_path: str,
 ) -> None:
-    """Print a processing summary to stdout.
-
-    Args:
-        total_frames:     Number of frames processed.
-        total_detections: Cumulative object detections across all frames.
-        elapsed:          Wall-clock seconds for the run.
-        output_path:      Path where output video was saved.
-    """
+    """Print a processing summary to stdout."""
     sep = "─" * 50
     print(f"\n{sep}")
     print("  PROCESSING SUMMARY")
