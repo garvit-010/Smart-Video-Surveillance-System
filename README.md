@@ -1,8 +1,9 @@
 # Smart Video Surveillance
 ## Multi-Stage Computer Vision Pipeline
 
-> **Roll No:** 23BAI10142  
-> **Course:** Computer Vision  
+**Name:** **Garvit Audichya**
+**Roll No:** **23BAI10142**  
+**Course:** **Computer Vision**  
 
 ---
 
